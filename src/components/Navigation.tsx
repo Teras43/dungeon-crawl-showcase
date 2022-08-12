@@ -1,20 +1,28 @@
 import styled from "styled-components";
 
-const Navigation = () => {
+// Types
+type NavTypes = {
+  searchState: string | undefined;
+  setSearchState: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const Navigation = ({ searchState = "", setSearchState }: NavTypes) => {
   return (
     <NavWrap className="px-1">
       <div className="row">
         <TextLogo className="col py-3">Horror TCG</TextLogo>
-        <form className="d-flex pb-3" role="search">
+        <form className="d-flex pb-3 px-5" role="search">
           <SearchInput
             className="form-control me-2"
             type="search"
             placeholder="Search"
             aria-label="Search"
+            value={searchState}
+            onChange={(event) => setSearchState(event.target.value)}
           />
-          <button className="btn btn-outline-danger" type="submit">
+          {/* <button className="btn btn-outline-danger" type="submit">
             Search
-          </button>
+          </button> */}
         </form>
       </div>
     </NavWrap>
@@ -23,6 +31,7 @@ const Navigation = () => {
 
 // Styles
 const NavWrap = styled.nav`
+  height: 25%;
   border-bottom: 1px solid #d92c2c;
   background-color: #1a1a1a;
 `;

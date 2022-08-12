@@ -1,7 +1,15 @@
-import { Navigation, Card } from "../components";
+import { useEffect, useState } from "react";
+import { Navigation, Card, Header } from "../components";
 import styled from "styled-components";
+import { NONAME } from "dns";
 
 const MainView = () => {
+  const [searchState, setSearchState] = useState<string>("");
+
+  // useEffect(() => {
+  //   console.log("searchState", searchState);
+  // }, [searchState]);
+
   const imgPaths = require.context(
     "../assets/images/cards/",
     false,
@@ -17,8 +25,6 @@ const MainView = () => {
     return imgs;
   };
   const images = joinPaths(imgPaths);
-
-  console.log("images: ", images);
 
   const cards = [
     {
@@ -160,16 +166,48 @@ const MainView = () => {
 
   const allCards = cards.map((card, index) => {
     return (
-      <CardWrap className="py-3">
-        <Card key={index + 1} name={card.name} img={card.cardImg} />
+      <CardWrap key={index + 1} className="py-3">
+        <Card name={card.name} img={card.cardImg} />
       </CardWrap>
     );
   });
 
+  const filteredCards = cards.map((card, index) => {
+    if (
+      searchState &&
+      card.name.toLowerCase().split("", searchState.length).join("") ===
+        searchState.toLowerCase()
+    ) {
+      return (
+        <CardWrap key={index + 1} className="py-3">
+          <Card name={card.name} img={card.cardImg} />
+        </CardWrap>
+      );
+    }
+  });
+
+  console.log("filteredCards: ", filteredCards);
+
   return (
     <PageWrap>
-      <Navigation></Navigation>
-      <BodyWrap className="container">{allCards}</BodyWrap>
+      <Navigation
+        searchState={searchState}
+        setSearchState={setSearchState}
+      ></Navigation>
+      <BodyWrap className="container">
+        {searchState !== "" ? <Header text={searchState} /> : <Header />}
+        {searchState !== "" ? (
+          !filteredCards.every((e) => e === undefined) ? (
+            filteredCards
+          ) : (
+            <NoReturnText>
+              Couldn't find what you were searching for...
+            </NoReturnText>
+          )
+        ) : (
+          allCards
+        )}
+      </BodyWrap>
     </PageWrap>
   );
 };
@@ -180,7 +218,7 @@ const PageWrap = styled.div`
 `;
 
 const BodyWrap = styled.div`
-  height: 100%;
+  height: 75%;
   background-color: #282828;
   overflow: scroll;
 `;
@@ -188,6 +226,15 @@ const BodyWrap = styled.div`
 const CardWrap = styled.div`
   display: flex;
   justify-content: center;
+`;
+
+const NoReturnText = styled.div`
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+  height: 100%;
+  width: 100%;
 `;
 
 // Exports
