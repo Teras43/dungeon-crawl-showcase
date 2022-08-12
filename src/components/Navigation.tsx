@@ -29,6 +29,7 @@ const NavWrap = styled.nav`
 
 const TextLogo = styled.div`
   font-family: "Rubik Distressed", cursive;
+  font-size: 28px;
   color: #d92c2c;
 `;
 
